@@ -84,17 +84,28 @@ export function ParameterInput({ param, value, onChange }: ParameterInputProps) 
       )}
 
       {param.type === 'boolean' && (
-        <div class="flex items-center space-x-3">
-          <input
-            id={param.key as string}
-            type="checkbox"
-            checked={value as boolean}
-            onChange={(e) => handleChange((e.target as HTMLInputElement).checked)}
-            class="w-4 h-4 text-cf-orange-500 border-gray-300 dark:border-gray-600 rounded focus:ring-cf-orange-500"
-          />
-          <label for={param.key as string} class="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
-            Enable this option
-          </label>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <input
+              id={param.key as string}
+              type="checkbox"
+              checked={value === true}
+              onChange={(e) => handleChange((e.target as HTMLInputElement).checked)}
+              class="w-4 h-4 text-cf-orange-500 border-gray-300 dark:border-gray-600 rounded focus:ring-cf-orange-500"
+            />
+            <label for={param.key as string} class="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+              {value === undefined ? 'Enable this option' : value === true ? 'Enabled' : 'Disabled'}
+            </label>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleChange(undefined)}
+            disabled={value === undefined}
+            class="btn btn-ghost text-xs px-2 py-1 disabled:opacity-30 disabled:cursor-not-allowed"
+            title={value === undefined ? 'Already unset' : 'Remove from MDM file (use dashboard setting)'}
+          >
+            Unset
+          </button>
         </div>
       )}
 
@@ -105,7 +116,7 @@ export function ParameterInput({ param, value, onChange }: ParameterInputProps) 
           onChange={(e) => handleChange((e.target as HTMLSelectElement).value)}
           class="input"
         >
-          <option value="">Select an option</option>
+          <option value="">Unset / Dash default</option>
           {param.options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

@@ -55,17 +55,6 @@ export function App() {
       <Header />
 
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            WARP MDM Configuration Generator
-          </h1>
-          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Generate <code class="px-2 py-1 bg-gray-200 dark:bg-gray-800 rounded text-sm">mdm.xml</code> files for Cloudflare WARP with all documented parameters.
-            Configure single or multiple organizations with full control over client behavior.
-          </p>
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Configuration */}
           <div class="space-y-6">
