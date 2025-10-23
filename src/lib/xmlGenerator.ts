@@ -64,11 +64,12 @@ function serializeValue(value: unknown, indent: number = 1): string {
  */
 function serializeDict(obj: Record<string, unknown>, indent: number = 1): string {
   const spaces = '  '.repeat(indent);
+  const entrySpaces = '  '.repeat(indent + 1);
   const entries = Object.entries(obj)
     .filter(([_, value]) => value !== undefined && value !== null && value !== '')
     .map(([key, value]) => {
-      const keyLine = `${spaces}<key>${escapeXml(key)}</key>`;
-      const valueLine = serializeValue(value, indent);
+      const keyLine = `${entrySpaces}<key>${escapeXml(key)}</key>`;
+      const valueLine = serializeValue(value, indent + 1);
       return `${keyLine}\n${valueLine}`;
     })
     .join('\n');
