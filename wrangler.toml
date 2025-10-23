@@ -1,0 +1,13 @@
+name = "warp-mdm-generator"
+compatibility_date = "2025-01-23"
+main = "worker.js"
+account_id = "d7d9eea07df9b1cd0c93141bd99239b6"
+
+# Static Assets Configuration
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# Custom domain configuration
+# Custom domain 'mdm.cflab.one' configured via Cloudflare Dashboard
+# Workers & Pages -> warp-mdm-generator -> Settings -> Domains & Routes
