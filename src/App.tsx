@@ -131,7 +131,7 @@ export function App() {
             </a>
             {' • '}
             <a
-              href="https://github.com"
+              href="https://github.com/brenobra/warp-mdm-generator"
               target="_blank"
               rel="noopener noreferrer"
               class="text-cf-orange-500 hover:text-cf-orange-600 font-medium"

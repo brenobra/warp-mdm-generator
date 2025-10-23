@@ -3,6 +3,7 @@
 A browser-based tool to generate Cloudflare WARP `mdm.xml` configuration files with support for all 20 documented parameters and multi-organization setups.
 
 🌐 **Live Tool:** [mdm.cflab.one](https://mdm.cflab.one)
+📦 **GitHub:** [github.com/brenobra/warp-mdm-generator](https://github.com/brenobra/warp-mdm-generator)
 
 ## Features
 
@@ -64,7 +65,7 @@ A browser-based tool to generate Cloudflare WARP `mdm.xml` configuration files w
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/warp-mdm-generator.git
+git clone https://github.com/brenobra/warp-mdm-generator.git
 cd warp-mdm-generator
 
 # Install dependencies
@@ -238,7 +239,7 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-- **Issues:** [GitHub Issues](https://github.com/yourusername/warp-mdm-generator/issues)
+- **Issues:** [GitHub Issues](https://github.com/brenobra/warp-mdm-generator/issues)
 - **Documentation:** [Cloudflare WARP Docs](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/)
 
 ---
