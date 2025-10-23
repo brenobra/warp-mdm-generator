@@ -36,3 +36,7 @@ wrangler.toml.local
 
 # TypeScript
 *.tsbuildinfo
+
+# Development notes (for LLM use only)
+claude.md
+PROJECT_SUMMARY.md

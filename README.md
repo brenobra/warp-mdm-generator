@@ -82,24 +82,20 @@ The app will be available at `http://localhost:5173`
 
 ## Deployment
 
-### Deploy to Cloudflare Workers
+Deploy to Cloudflare Workers in 3 steps:
 
 ```bash
-# Login to Cloudflare
+# 1. Login to Cloudflare
 npx wrangler login
 
-# Deploy
+# 2. Build the project
 npm run build
-npx wrangler pages deploy dist
-```
 
-### Deploy to Cloudflare Workers (with static assets)
-
-```bash
-# Update wrangler.toml with your account details
-# Then run:
+# 3. Deploy
 npx wrangler deploy
 ```
+
+**Custom Domain:** Configure in [Cloudflare Dashboard](https://dash.cloudflare.com/) → Workers & Pages → Your Worker → Settings → Domains & Routes
 
 ## Usage
 
