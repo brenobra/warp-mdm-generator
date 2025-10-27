@@ -3,13 +3,16 @@
  */
 
 import { signal } from '@preact/signals';
+import { useRef, useState } from 'preact/hooks';
 import type { MDMConfig, OrganizationConfig } from './lib/types';
 import { createDefaultOrganization } from './lib/xmlGenerator';
+import { parseXmlToConfig } from './lib/xmlParser';
 import { Header } from './components/Header';
 import { GlobalSettings } from './components/GlobalSettings';
 import { OrganizationCard } from './components/OrganizationCard';
 import { XmlPreview } from './components/XmlPreview';
-import { PlusCircle } from 'lucide-preact';
+import { ImportNotification } from './components/ImportNotification';
+import { PlusCircle, Upload } from 'lucide-preact';
 
 // Global state
 export const mdmConfig = signal<MDMConfig>({
@@ -19,7 +22,20 @@ export const mdmConfig = signal<MDMConfig>({
   android_apps: [],
 });
 
+// Import notification state
+export const importNotification = signal<{
+  show: boolean;
+  message: string;
+  type: 'success' | 'error';
+} | null>(null);
+
+// Import warnings (displayed in validation panel)
+export const importWarnings = signal<string[]>([]);
+
 export function App() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
   const addOrganization = () => {
     const current = mdmConfig.value;
     mdmConfig.value = {
@@ -48,16 +64,150 @@ export function App() {
     };
   };
 
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const processFile = async (file: File) => {
+    // Reset warnings
+    importWarnings.value = [];
+
+    try {
+      const text = await file.text();
+      const { config, warnings } = parseXmlToConfig(text);
+
+      // Replace the entire config
+      mdmConfig.value = {
+        ...config,
+        configs: config.configs || [createDefaultOrganization()],
+      };
+
+      // Store warnings for display in validation panel
+      importWarnings.value = warnings;
+
+      // Show success notification
+      const orgCount = config.configs?.length || 0;
+      const message = `Imported ${orgCount} organization${orgCount !== 1 ? 's' : ''}`;
+      importNotification.value = {
+        show: true,
+        message,
+        type: 'success',
+      };
+
+      // Auto-dismiss after 3 seconds
+      setTimeout(() => {
+        importNotification.value = null;
+      }, 3000);
+    } catch (error) {
+      // Show error notification
+      importNotification.value = {
+        show: true,
+        message: error instanceof Error ? error.message : 'Failed to import file',
+        type: 'error',
+      };
+
+      // Auto-dismiss after 5 seconds for errors
+      setTimeout(() => {
+        importNotification.value = null;
+      }, 5000);
+    }
+  };
+
+  const handleFileImport = async (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+
+    await processFile(file);
+
+    // Reset file input
+    target.value = '';
+  };
+
+  const handleDragEnter = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragOver = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragLeave = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+
+    // Validate file type
+    if (!file.name.endsWith('.xml') && !file.name.endsWith('.plist')) {
+      importNotification.value = {
+        show: true,
+        message: 'Please upload a .xml or .plist file',
+        type: 'error',
+      };
+      setTimeout(() => {
+        importNotification.value = null;
+      }, 5000);
+      return;
+    }
+
+    await processFile(file);
+  };
+
   const isMultiOrg = (mdmConfig.value.configs?.length || 0) > 1;
 
   return (
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <ImportNotification />
       <Header />
 
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Configuration */}
           <div class="space-y-6">
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xml,.plist"
+              onChange={handleFileImport}
+              class="hidden"
+            />
+
+            {/* Import Button / Drop Zone */}
+            <button
+              onClick={handleImportClick}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              class={`
+                w-full btn btn-ghost px-4 py-3 border-2 border-dashed rounded-lg transition-all group
+                ${isDragging
+                  ? 'border-cf-blue-500 bg-cf-blue-50 dark:bg-cf-blue-950 scale-105'
+                  : 'border-gray-300 dark:border-gray-700 hover:border-cf-blue-500 dark:hover:border-cf-blue-500'
+                }
+              `}
+            >
+              <Upload class={`w-5 h-5 mr-2 ${isDragging ? 'text-cf-blue-500' : 'text-gray-400 group-hover:text-cf-blue-500'}`} />
+              <span class={`font-medium ${isDragging ? 'text-cf-blue-500' : 'text-gray-600 dark:text-gray-400 group-hover:text-cf-blue-500'}`}>
+                {isDragging ? 'Drop your MDM file here' : 'Import Existing MDM File'}
+              </span>
+            </button>
+
             {/* Global Settings */}
             <GlobalSettings />
 

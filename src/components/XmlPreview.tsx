@@ -8,6 +8,7 @@ import type { MDMConfig } from '../lib/types';
 import { generateMDMXml } from '../lib/xmlGenerator';
 import { validateMDMConfig } from '../lib/validation';
 import { PLATFORM_PATHS } from '../lib/constants';
+import { importWarnings } from '../App';
 
 interface XmlPreviewProps {
   config: MDMConfig;
@@ -34,6 +35,12 @@ export function XmlPreview({ config }: XmlPreviewProps) {
 
   // Validate configuration
   const validation = validateMDMConfig(config);
+
+  // Combine import warnings with validation warnings
+  const allWarnings = [
+    ...importWarnings.value,
+    ...validation.warnings,
+  ];
 
   const copyToClipboard = async () => {
     try {
@@ -78,14 +85,14 @@ export function XmlPreview({ config }: XmlPreviewProps) {
         </div>
       )}
 
-      {validation.warnings.length > 0 && validation.errors.length === 0 && (
+      {allWarnings.length > 0 && validation.errors.length === 0 && (
         <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
           <div class="flex items-start gap-2">
             <AlertCircle class="w-5 h-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
             <div class="flex-1">
               <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Warnings</h4>
               <ul class="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 list-disc list-inside">
-                {validation.warnings.map((warning, i) => (
+                {allWarnings.map((warning, i) => (
                   <li key={i}>{warning}</li>
                 ))}
               </ul>
@@ -94,7 +101,7 @@ export function XmlPreview({ config }: XmlPreviewProps) {
         </div>
       )}
 
-      {validation.valid && (
+      {validation.valid && allWarnings.length === 0 && (
         <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
           <div class="flex items-center gap-2 text-green-800 dark:text-green-200">
             <CheckCircle class="w-5 h-5" />

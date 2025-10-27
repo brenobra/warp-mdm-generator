@@ -205,11 +205,14 @@ export function generateMDMXml(config: MDMConfig): string {
     }
   }
 
-  // Generate XML
+  // Generate XML with proper plist wrapper
   const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  const doctype = '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n';
+  const plistOpen = '<plist version="1.0">\n';
   const xmlBody = serializeDict(rootDict, 0);
+  const plistClose = '\n</plist>';
 
-  return xmlHeader + xmlBody;
+  return xmlHeader + doctype + plistOpen + xmlBody + plistClose;
 }
 
 /**

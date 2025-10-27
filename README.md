@@ -9,6 +9,7 @@ A browser-based tool to generate Cloudflare WARP `mdm.xml` configuration files w
 
 - ✅ **All 20 WARP MDM Parameters** - Complete support for every documented configuration option
 - 🏢 **Multi-Organization Support** - Configure multiple Zero Trust organizations in a single file
+- 📥 **Import & Export** - Import existing MDM files for editing with drag-and-drop support
 - 🎨 **Beautiful UI** - Cloudflare-inspired design with dark mode
 - ✨ **Real-time Validation** - Instant feedback on configuration errors
 - 📋 **Copy & Download** - Easy export of generated XML files
@@ -99,6 +100,19 @@ npx wrangler deploy
 
 ## Usage
 
+### Import Existing MDM File
+
+Have an existing `mdm.xml` file? Import it to edit or update parameters:
+
+1. **Click** the "Import Existing MDM File" button at the top, or
+2. **Drag & drop** your `.xml` or `.plist` file onto the import button
+3. The tool will parse your file and populate all fields
+4. Edit any parameters as needed
+5. Download the updated file
+
+**Supported formats:** Standard Apple plist XML format (`.xml`, `.plist`)
+**Import behavior:** Replaces entire configuration (unsaved changes will be lost)
+
 ### Basic Setup (Single Organization)
 
 1. Open the generator in your browser
@@ -162,11 +176,13 @@ warp-mdm-generator/
 │   │   ├── GlobalSettings.tsx      # Global MDM settings
 │   │   ├── OrganizationCard.tsx    # Org configuration card
 │   │   ├── ParameterInput.tsx      # Reusable input component
-│   │   └── XmlPreview.tsx          # XML preview & export
+│   │   ├── XmlPreview.tsx          # XML preview & export
+│   │   └── ImportNotification.tsx  # Import success/error toast
 │   ├── lib/
 │   │   ├── types.ts                # TypeScript definitions
 │   │   ├── constants.ts            # Parameter metadata
 │   │   ├── xmlGenerator.ts         # XML serialization
+│   │   ├── xmlParser.ts            # XML import parser
 │   │   └── validation.ts           # Validation logic
 │   ├── App.tsx                     # Main app component
 │   ├── main.tsx                    # Entry point
